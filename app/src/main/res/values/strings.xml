@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Arrhythmia Detection</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="facebook_app_id">1608035932788068</string>
+</resources>
