@@ -10,18 +10,30 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 
 public class MainActivity extends Activity {
+    private Boolean signedIn;
+    private LoginButton fbloginButton;
+    private CallbackManager mCallbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("MAIN", "ACTiVITY");
         super.onCreate(savedInstanceState);
-
         FacebookSdk.sdkInitialize(getApplicationContext());
+
+
+
         final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        Boolean signedIn = sharedPref.getBoolean("signedin", false);
+        signedIn = sharedPref.getBoolean("signedin", false);
         if (signedIn) {
             Log.d("MAIN", "ifLoop");
             Intent intent = new Intent(MainActivity.this, HomePage.class);
@@ -29,13 +41,53 @@ public class MainActivity extends Activity {
             finish();
         }
 
-        //if user is anon, show login page
-        Intent intent = new Intent(MainActivity.this, Login.class);
-        startActivity(intent);
-        finish();
-
-
         setContentView(R.layout.activity_main);
+
+        fbloginButton = (LoginButton) findViewById(R.id.fb_login_button);
+        fbloginButton.setReadPermissions("user_friends");
+
+        mCallbackManager = CallbackManager.Factory.create();
+        fbloginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+
+
+                Log.d("LOgIN", "onSuccessmethod");
+
+                AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                Log.e("Token",accessToken.toString());
+                signedIn = true;
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean("signedin",signedIn);
+                editor.apply();
+                Intent intent = new Intent(MainActivity.this, HomePage.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+            }
+        });
+        //if user is anon, show login page
+        /*Intent intent = new Intent(MainActivity.this, HomePage.class);
+        startActivity(intent);
+        finish();*/
+
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
