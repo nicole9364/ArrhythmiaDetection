@@ -75,12 +75,6 @@ public class MainActivity extends Activity {
                 // App code
             }
         });
-        //if user is anon, show login page
-        /*Intent intent = new Intent(MainActivity.this, HomePage.class);
-        startActivity(intent);
-        finish();*/
-
-
 
     }
 
