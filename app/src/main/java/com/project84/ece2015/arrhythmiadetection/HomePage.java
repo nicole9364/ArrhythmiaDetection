@@ -15,6 +15,8 @@ public class HomePage extends BaseActivity {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage);
+        Object actionBar = getSupportActionBar();
+
         Log.d("HOMEPAGE", "HAHAHHAHHAA");
 
 

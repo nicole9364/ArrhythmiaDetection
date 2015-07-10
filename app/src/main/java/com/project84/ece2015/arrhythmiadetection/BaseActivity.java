@@ -2,15 +2,16 @@ package com.project84.ece2015.arrhythmiadetection;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+
 /**
  * Created by Nicole on 10/07/2015.
  */
-public class BaseActivity extends Activity {
+public class BaseActivity extends AppCompatActivity {
 
 
 
