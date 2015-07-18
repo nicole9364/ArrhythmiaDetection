@@ -1,11 +1,17 @@
 package com.project84.ece2015.arrhythmiadetection;
 
-import android.app.Activity;
-import android.os.Bundle;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 
 
 /**
@@ -41,6 +47,15 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void openLogout() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(accessToken != null && com.facebook.Profile.getCurrentProfile() != null){
+            Log.d("LOGOUT", "if loop");
+            LoginManager.getInstance().logOut();
+            Intent intent = new Intent(BaseActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
 
     }
 }

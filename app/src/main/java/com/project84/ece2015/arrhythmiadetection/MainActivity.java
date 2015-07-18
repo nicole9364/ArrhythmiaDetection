@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,8 +14,11 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import java.util.Arrays;
 
 
 public class MainActivity extends Activity {
@@ -32,19 +34,26 @@ public class MainActivity extends Activity {
 
 
 
-        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(accessToken != null ){
+            Log.d("MAIN", "ifLoop");
+            Intent intent = new Intent(MainActivity.this, HomePage.class);
+            startActivity(intent);
+            finish();
+        }
+        /*final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         signedIn = sharedPref.getBoolean("signedin", false);
         if (signedIn) {
             Log.d("MAIN", "ifLoop");
             Intent intent = new Intent(MainActivity.this, HomePage.class);
             startActivity(intent);
             finish();
-        }
+        }*/
 
         setContentView(R.layout.activity_main);
 
         fbloginButton = (LoginButton) findViewById(R.id.fb_login_button);
-        fbloginButton.setReadPermissions("user_friends");
+        fbloginButton.setReadPermissions(Arrays.asList("user_friends", "public_profile"));
 
         mCallbackManager = CallbackManager.Factory.create();
         fbloginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -55,11 +64,11 @@ public class MainActivity extends Activity {
                 Log.d("LOgIN", "onSuccessmethod");
 
                 AccessToken accessToken = AccessToken.getCurrentAccessToken();
-                Log.e("Token",accessToken.toString());
-                signedIn = true;
+                Log.e("Token", accessToken.toString());
+                /*signedIn = true;
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean("signedin",signedIn);
-                editor.apply();
+                editor.apply();*/
                 Intent intent = new Intent(MainActivity.this, HomePage.class);
                 startActivity(intent);
                 finish();
@@ -74,6 +83,8 @@ public class MainActivity extends Activity {
             public void onError(FacebookException exception) {
                 // App code
             }
+
+
         });
 
     }
