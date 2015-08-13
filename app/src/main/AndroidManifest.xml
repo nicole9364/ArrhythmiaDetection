@@ -22,9 +22,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MemberHomePage">
+        </activity>
 
-        <activity android:name=".HomePage"> </activity>
+        <activity android:name=".HomePage">
+        </activity>
+        <activity android:name=".NewUserPage">
+        </activity>
+        <activity android:name=".CreateGroupPage"
+            android:parentActivityName=".NewUserPage">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".NewUserPage"/>
+        </activity>
+        <activity android:name=".ManageGroup"
+            android:parentActivityName=".HomePage" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomePage" />
 
+        </activity>
 
     </application>
 
