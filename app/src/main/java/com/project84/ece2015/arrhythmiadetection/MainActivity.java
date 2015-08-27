@@ -18,6 +18,7 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.gson.JsonObject;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.authentication.MobileServiceAuthenticationProvider;
 import com.microsoft.windowsazure.mobileservices.authentication.MobileServiceUser;
@@ -25,6 +26,7 @@ import java.net.MalformedURLException;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -53,8 +55,6 @@ public class MainActivity extends Activity {
 
     private MobileServiceClient mClient;
     private MobileServiceTable<UserData> mUserDataTable;
-    private TableQueryCallback<UserData> mUserDataCallback;
-    private MobileServiceJsonTable jsonTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +68,13 @@ public class MainActivity extends Activity {
                     "https://arrhythmiadetection.azure-mobile.net/",
                     "LPElhTMLVPNSIgciYyGYEGNQJpJtqs38",
                     this);
-            mUserDataTable = mClient.getTable(UserData.class);
-            //jsonTable = mClient.getTable("UserData");
+
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+
+        mUserDataTable = mClient.getTable(UserData.class);
 
         setContentView(R.layout.activity_main);
         final Profile profile = Profile.getCurrentProfile();
@@ -94,7 +95,7 @@ public class MainActivity extends Activity {
         }else {
 
 
-            //fbloginButton = (LoginButton) findViewById(R.id.fb_login_button);
+
             fbloginButton.setReadPermissions(Arrays.asList("user_friends", "public_profile"));
 
 
@@ -103,7 +104,6 @@ public class MainActivity extends Activity {
                 @Override
                 public void onSuccess(LoginResult loginResult) {
 
-
                     Log.d("LOgIN", "onSuccessmethod");
                     fbloginButton.setVisibility(View.GONE);
 
@@ -111,9 +111,6 @@ public class MainActivity extends Activity {
 
                     AccessToken accessToken = AccessToken.getCurrentAccessToken();
                     Log.e("Token", accessToken.toString());
-                    /*Intent intent = new Intent(MainActivity.this, HomePage.class);
-                    startActivity(intent);
-                    finish();*/
                     retrieveData(accessToken.getUserId());
                 }
 
@@ -121,14 +118,15 @@ public class MainActivity extends Activity {
                 public void onCancel() {
                     // App code
                 }
-
-                @Override
-                public void onError(FacebookException exception) {
-                    // App code
-                }
+                 @Override
+                 public void onError(FacebookException exception) {
+                     // App code
+                 }
 
 
             });
+
+
         }
 
     }
@@ -173,8 +171,9 @@ public class MainActivity extends Activity {
                     if (result.size()==1){
                         Log.d("Found user data","ONE!");
                         for (UserData data : result){
-                            currentUser = new UserData(data.getId(),data.getGroupId(),data.getIsManager());
+                            currentUser = new UserData(data.getId(),data.getGroupId(),data.getIsManager(),data.getPhonenumb(),data.getGroupId());
                         }
+
                         try {
                             if (currentUser.getIsManager() == true) {
                                 Intent intent = new Intent(MainActivity.this, HomePage.class);
@@ -185,13 +184,7 @@ public class MainActivity extends Activity {
                             /*Intent intent = new Intent(MainActivity.this, MemberHomePage.class);
                             startActivity(intent);
                             finish();*/
-                            } /*else {
-                                //no manager, no assigned group
-                                Log.d("NO assigned group", "not a manager");
-                                Intent intent = new Intent(MainActivity.this, NewUserPage.class);
-                                startActivity(intent);
-                                finish();
-                            }*/
+                            }
                         }catch(NullPointerException e){
                             Log.d("NO assigned group", "not a manager");
                             Intent intent = new Intent(MainActivity.this, NewUserPage.class);

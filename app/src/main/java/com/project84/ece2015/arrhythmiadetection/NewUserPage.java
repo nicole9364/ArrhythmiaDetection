@@ -15,6 +15,10 @@ import com.facebook.AccessToken;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.ProfilePictureView;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.authentication.MobileServiceAuthenticationProvider;
+import com.microsoft.windowsazure.mobileservices.authentication.MobileServiceUser;
+import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 /**
  * Created by Nicole on 11/08/2015.
@@ -36,7 +40,10 @@ public class NewUserPage extends BaseActivity {
         setContentView(R.layout.newuserpage);
 
 
+
+
         Profile profile = Profile.getCurrentProfile();
+
         username = profile.getName();
         TextView name = (TextView) findViewById(R.id.usernametext);
         name.setText(username);

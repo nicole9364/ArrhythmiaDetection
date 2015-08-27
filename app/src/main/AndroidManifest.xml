@@ -40,7 +40,12 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomePage" />
-
+        </activity>
+        <activity android:name=".InvitePage"
+            android:parentActivityName=".ManageGroup" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ManageGroup" />
         </activity>
 
     </application>

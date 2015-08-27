@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:facebook="http://schemas.android.com/tools"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.facebook.login.widget.ProfilePictureView
+        android:id="@+id/fbprofile_pic"
+        android:layout_width="70dp"
+        android:layout_height="68dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        facebook:preset_size="custom" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
+        android:textSize="15dp" />
+
+    <CheckBox
+    android:id="@+id/checkBox"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+        android:checked="false"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="120dp" />
+
+</LinearLayout>
