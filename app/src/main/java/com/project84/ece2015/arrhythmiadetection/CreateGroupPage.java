@@ -13,17 +13,22 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Profile;
+import com.facebook.login.widget.ProfilePictureView;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.gson.GsonBuilder;
+import com.microsoft.windowsazure.messaging.NotificationHub;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.MobileServiceList;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
+import com.microsoft.windowsazure.notifications.NotificationsManager;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -34,10 +39,13 @@ import java.util.List;
 public class CreateGroupPage extends BaseActivity  {
 
     Spinner spinner;
+    //private ProgressBar loading;
     private Button completeBtn;
     private String grpName;
     private String phoneNum;
     private String selected_condition;
+    private ProfilePictureView pic;
+
     private int selected_condition_position;
     private ArrayAdapter<String> adapter;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
@@ -45,6 +53,11 @@ public class CreateGroupPage extends BaseActivity  {
     private MobileServiceClient mClient;
     private MobileServiceTable<UserData> mUserDataTable;
 
+    private String SENDER_ID = "678716789292";
+    private GoogleCloudMessaging gcm;
+    private NotificationHub hub;
+    private String HubName = "arrhythmia-detectionhub";
+    private String HubListenConnectionString = "Endpoint=sb://arrhythmia-detectionhub2-ns.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=MKJWRZSBncKkmCmM68FF44w4CLj6qzxPqqlGXEzMTWI=";
 
 
 
@@ -55,9 +68,10 @@ public class CreateGroupPage extends BaseActivity  {
 
         try {
             mClient = new MobileServiceClient(
-                    "https://arrhythmiadetection.azure-mobile.net/",
-                    "LPElhTMLVPNSIgciYyGYEGNQJpJtqs38",
-                    CreateGroupPage.this);
+                    "https://arrhythmia-detection.azure-mobile.net/",
+                    "XMdXwbdExMrUFlySSayXtOFTqnpMot14",
+                    this
+            );
 
 
         } catch (MalformedURLException e) {
@@ -66,8 +80,12 @@ public class CreateGroupPage extends BaseActivity  {
         mUserDataTable = mClient.getTable(UserData.class);
 
 
+
         grpName = ((EditText) findViewById(R.id.grpname)).getText().toString();
         phoneNum = ((EditText) findViewById(R.id.phoneNo)).getText().toString();
+
+        pic = (ProfilePictureView) findViewById(R.id.fbprofile_pic);
+        pic.setProfileId(Profile.getCurrentProfile().getId());
 
 
         spinner = (Spinner) findViewById(R.id.heartCondition);
@@ -115,6 +133,9 @@ public class CreateGroupPage extends BaseActivity  {
         completeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*loading = (ProgressBar)findViewById(R.id.progressBar);
+                loading.setVisibility(View.VISIBLE);*/
+
                 grpName = ((EditText) findViewById(R.id.grpname)).getText().toString();
                 phoneNum = ((EditText) findViewById(R.id.phoneNo)).getText().toString();
 
@@ -137,6 +158,8 @@ public class CreateGroupPage extends BaseActivity  {
                             if (result.size() == 1 | result.size() > 1) {
                                 Toast.makeText(CreateGroupPage.this, "Group Name already exists. Please choose another group name.", Toast.LENGTH_LONG).show();
                             } else if (result.size() == 0) {
+                                /*loading = (ProgressBar)findViewById(R.id.progressBar);
+                                loading.setVisibility(View.VISIBLE);*/
                                 createNewGroup(grpName,phoneNum,selected_condition);
                             }
 
@@ -182,13 +205,19 @@ public class CreateGroupPage extends BaseActivity  {
 
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
+
                     editor.putString("id",Profile.getCurrentProfile().getId());
+                    editor.putBoolean("ismanager",true);
                     editor.putString("groupid",groupName);
                     editor.putString("phone",phone);
                     editor.putString("condition",condition);
 
                     editor.commit();
 
+                    //registration to push notification hub
+                    NotificationsManager.handleNotifications(CreateGroupPage.this, SENDER_ID, MyHandler.class);
+
+                    //loading.setVisibility(View.GONE);
                     finish();
 
                 }else{

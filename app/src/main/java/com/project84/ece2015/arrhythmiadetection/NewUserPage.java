@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.Profile;
@@ -18,7 +19,13 @@ import com.facebook.login.widget.ProfilePictureView;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.authentication.MobileServiceAuthenticationProvider;
 import com.microsoft.windowsazure.mobileservices.authentication.MobileServiceUser;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
+import com.microsoft.windowsazure.notifications.NotificationsManager;
+
+import java.net.MalformedURLException;
+import java.util.List;
 
 /**
  * Created by Nicole on 11/08/2015.
@@ -34,13 +41,40 @@ public class NewUserPage extends BaseActivity {
     private Button joinGroup;
     private Button logoutbtn;
 
+    private MobileServiceClient mClient;
+    private MobileServiceTable<UserData> mUserDataTable;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.newuserpage);
 
 
+        try {
+            mClient = new MobileServiceClient(
+                    "https://arrhythmia-detection.azure-mobile.net/",
+                    "XMdXwbdExMrUFlySSayXtOFTqnpMot14",
+                    this
+            );
 
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        mUserDataTable = mClient.getTable(UserData.class);
+
+
+        mUserDataTable.where().field("id").eq(Profile.getCurrentProfile().getId()).execute(new TableQueryCallback<UserData>() {
+            @Override
+            public void onCompleted(List<UserData> result, int count, Exception exception, ServiceFilterResponse response) {
+                //get list of my group members
+                for (UserData member : result) {
+                    if(member.getInvitation()!=null){
+                        Toast.makeText(NewUserPage.this, "You have received an invitation", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
 
         Profile profile = Profile.getCurrentProfile();
 
@@ -59,8 +93,6 @@ public class NewUserPage extends BaseActivity {
                 Intent intent = new Intent(NewUserPage.this,CreateGroupPage.class);
                 PendingIntent pendingIntent =
                         TaskStackBuilder.create(NewUserPage.this)
-                                // add all of DetailsActivity's parents to the stack,
-                                // followed by DetailsActivity itself
                                 .addNextIntentWithParentStack(intent)
                                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -77,7 +109,16 @@ public class NewUserPage extends BaseActivity {
         joinGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(NewUserPage.this,JoinGroupPage.class);
+                PendingIntent pendingIntent =
+                        TaskStackBuilder.create(NewUserPage.this)
+                                .addNextIntentWithParentStack(intent)
+                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(NewUserPage.this);
+                builder.setContentIntent(pendingIntent);
+
+                startActivity(intent);
             }
         });
 

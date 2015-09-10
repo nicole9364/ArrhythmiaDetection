@@ -7,16 +7,14 @@ import com.facebook.login.widget.ProfilePictureView;
 /**
  * Created by Nicole on 25/08/2015.
  */
-public class Row {
+public class MemberRow {
     String id;
     String profileName;
-    boolean selected;
 
-    public Row(String id, String name, boolean selected){
+    public MemberRow(String id, String name){
         super();
         this.id = id;
         this.profileName = name;
-        this.selected = selected;
     }
 
     public String getId(){
@@ -33,10 +31,4 @@ public class Row {
         this.profileName = name;
     }
 
-    public boolean isChecked(){
-        return selected;
-    }
-    public void setChecked(boolean selected) {
-        this.selected = selected;
-    }
 }

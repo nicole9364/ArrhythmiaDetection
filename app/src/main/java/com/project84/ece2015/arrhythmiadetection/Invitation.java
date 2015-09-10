@@ -1,22 +1,21 @@
 package com.project84.ece2015.arrhythmiadetection;
 
-import android.widget.TextView;
-
-import com.facebook.login.widget.ProfilePictureView;
-
 /**
- * Created by Nicole on 25/08/2015.
+ * Created by Nicole on 28/08/2015.
  */
-public class Row {
+public class Invitation {
+
     String id;
     String profileName;
-    boolean selected;
+    String msg;
+    String grpName;
 
-    public Row(String id, String name, boolean selected){
+    public Invitation(String id, String name,String groupName){
         super();
         this.id = id;
         this.profileName = name;
-        this.selected = selected;
+        this.msg = "Please join my group" + groupName;
+        this.grpName = groupName;
     }
 
     public String getId(){
@@ -33,10 +32,10 @@ public class Row {
         this.profileName = name;
     }
 
-    public boolean isChecked(){
-        return selected;
+    public String getGrpName(){
+        return grpName;
     }
-    public void setChecked(boolean selected) {
-        this.selected = selected;
+    public void setGrpName(String groupName){
+        this.grpName = groupName;
     }
 }

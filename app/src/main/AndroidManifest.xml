@@ -2,16 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.project84.ece2015.arrhythmiadetection" >
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="15" />
+    <permission android:name="com.project84.ece2015.arrhythmiadetection.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.project84.ece2015.arrhythmiadetection.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!--<uses-sdk android:minSdkVersion="11" android:targetSdkVersion="15" />-->
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <activity android:name="com.facebook.FacebookActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar" android:label="@string/app_name" android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
-
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <activity
             android:name=".MainActivity"
@@ -35,6 +42,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".NewUserPage"/>
         </activity>
+        <activity android:name=".JoinGroupPage"
+            android:parentActivityName=".NewUserPage">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".NewUserPage"/>
+        </activity>
         <activity android:name=".ManageGroup"
             android:parentActivityName=".HomePage" >
             <meta-data
@@ -48,6 +61,16 @@
                 android:value=".ManageGroup" />
         </activity>
 
+
+        <receiver android:name="com.microsoft.windowsazure.notifications.NotificationsBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.project84.ece2015.arrhythmiadetection" />
+            </intent-filter>
+        </receiver>
+
     </application>
+
 
 </manifest>

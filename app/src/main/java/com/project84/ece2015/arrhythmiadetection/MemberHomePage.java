@@ -25,8 +25,8 @@ public class MemberHomePage extends BaseActivity {
 
         private String userid;
         private String username;
-        private Bitmap userpic;
         private Button logoutbtn;
+        private Button call;
 
         @Override
         public void onCreate(Bundle savedInstanceState){
@@ -38,12 +38,6 @@ public class MemberHomePage extends BaseActivity {
             TextView name = (TextView) findViewById(R.id.usernametext);
             name.setText(username);
 
-        /*TODO
-        userpic = profile.getProfilePicture();
-        ImageView pic = (ImageView) findViewById(R.id.profile_pic);
-        pic.setImageBitmap(userpic);*/
-
-
             userid = profile.getId();
             ProfilePictureView pic = (ProfilePictureView) findViewById(R.id.fbprofile_pic);
             pic.setProfileId(userid);
@@ -53,6 +47,8 @@ public class MemberHomePage extends BaseActivity {
             findViewById(R.id.manageGroup).setVisibility(View.GONE);
 
             //TODO create a see group button/feature
+
+
 
             logoutbtn = (Button) findViewById(R.id.logout);
             logoutbtn.setOnClickListener(new View.OnClickListener() {
